@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[케인] 죄송합니다</title>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.querySelector(".root");
+        const viewport = document.querySelector(".viewport");
+        const control = document.querySelector(".control");
+        const [img1, img2, img3] = document.querySelectorAll("img");
+
+        let loadCount = 0;
+
+        let ani = null;
+
+        root.style.height = window.innerHeight + "px";
+
+        const update = (clientY) => {
+          const { top } = viewport.getBoundingClientRect();
+          const { height } = img1.getBoundingClientRect();
+
+          const pos = Math.round(
+            (((clientY - top) / viewport.offsetHeight) * 100 * 80) / 100
+          );
+
+          const frame = Math.min(Math.max(pos, 0), 79);
+          control.style.top = `${(-frame * (height * 3)) / 90}px`;
+        };
+
+        const imgLoad = () => {
+          loadCount++;
+          if (loadCount === 3) {
+            const text = document.querySelector(".text");
+
+            text.style.display = "none";
+
+            ani = setInterval(() => {
+              control.style.opacity = parseFloat(control.style.opacity) + 0.01;
+
+              if (parseFloat(control.style.opacity) >= 1) {
+                clearInterval(ani);
+                control.style.opacity = 1;
+              }
+            }, 1);
+          }
+        };
+
+        img1.addEventListener("load", imgLoad);
+        img2.addEventListener("load", imgLoad);
+        img3.addEventListener("load", imgLoad);
+
+        window.addEventListener("mousemove", (event) => {
+          window.last = event.clientY;
+          update(event.clientY);
+        });
+
+        window.addEventListener("touchmove", (event) => {
+          window.last = event.touches[0].clientY;
+          update(event.targetTouches[0].clientY);
+        });
+
+        window.addEventListener("resize", () => {
+          update(window.last);
+        });
+      });
+    </script>
+
+    <style>
+      body {
+        margin: 0;
+      }
+
+      .root {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .viewport {
+        width: 100vw;
+        aspect-ratio: 16 / 9;
+
+        max-width: 960px;
+        max-height: 540px;
+
+        overflow: hidden;
+        position: absolute;
+        background-color: black;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .text {
+        color: white;
+        font-size: 2.5rem;
+      }
+
+      .control {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 0;
+      }
+
+      img {
+        -webkit-user-drag: none;
+        width: 100vw;
+        max-width: 960px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="root">
+      <div class="viewport">
+        <span class="text">마하 9의 속도로 로딩 중</span>
+        <div class="control" style="opacity: 0">
+          <img src="sorry1.png" />
+          <img src="sorry2.png" />
+          <img src="sorry3.png" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
