@@ -10,53 +10,53 @@
     <meta name="theme-color" content="#BDD7A2" />
     <meta property="og:image" content="https://im-sorry.xyz/thumb.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const root = document.querySelector(".root");
         const viewport = document.querySelector(".viewport");
-        const control = document.querySelector(".control");
-        const [img1, img2, img3] = document.querySelectorAll("img");
+        const video = document.querySelector("video");
 
-        let loadCount = 0;
-
+        let readyLoop = null;
+        let ready = false;
         let ani = null;
 
         root.style.height = window.innerHeight + "px";
 
+        video.load();
+
         const update = (clientY) => {
+          if (!ready) return;
+
           const { top } = viewport.getBoundingClientRect();
-          const { height } = img1.getBoundingClientRect();
 
           const pos = Math.round(
-            (((clientY - top) / viewport.offsetHeight) * 100 * 80) / 100
+            (((clientY - top) / viewport.offsetHeight) * 100 * 82) / 100
           );
 
           const frame = Math.min(Math.max(pos, 0), 79);
-          control.style.top = `${(-frame * (height * 3)) / 90}px`;
+          video.currentTime = frame / 29.97;
         };
 
-        const imgLoad = () => {
-          loadCount++;
-          if (loadCount === 3) {
-            const text = document.querySelector(".text");
+        readyLoop = setInterval(() => {
+          if (!ready) ready = video.readyState === 4;
 
+          if (ready) {
+            clearInterval(readyLoop);
+
+            const text = document.querySelector(".text");
             text.style.display = "none";
 
             ani = setInterval(() => {
-              control.style.opacity = parseFloat(control.style.opacity) + 0.01;
+              video.style.opacity = parseFloat(video.style.opacity) + 0.01;
 
-              if (parseFloat(control.style.opacity) >= 1) {
+              if (parseFloat(video.style.opacity) >= 1) {
                 clearInterval(ani);
-                control.style.opacity = 1;
+                video.style.opacity = 1;
               }
             }, 1);
           }
-        };
-
-        img1.addEventListener("load", imgLoad);
-        img2.addEventListener("load", imgLoad);
-        img3.addEventListener("load", imgLoad);
+        }, 100);
 
         window.addEventListener("mousemove", (event) => {
           window.last = event.clientY;
@@ -90,14 +90,9 @@
       }
 
       .viewport {
-        width: 100vw;
-        aspect-ratio: 16 / 9;
-
         max-width: 960px;
         max-height: 540px;
 
-        overflow: hidden;
-        position: absolute;
         background-color: black;
 
         display: flex;
@@ -108,31 +103,25 @@
       .text {
         color: white;
         font-size: 2.5rem;
-      }
 
-      .control {
         position: absolute;
-        display: flex;
-        flex-direction: column;
-        top: 0;
       }
 
-      img {
-        -webkit-user-drag: none;
-        width: 100vw;
-        max-width: 960px;
+      video {
+        width: 100%;
       }
     </style>
   </head>
   <body>
     <div class="root">
       <div class="viewport">
+        <video
+          src="sorry.mp4"
+          width="960"
+          height="540"
+          style="opacity: 0"
+        ></video>
         <span class="text">마하 9의 속도로 로딩 중</span>
-        <div class="control" style="opacity: 0">
-          <img src="sorry1.png" />
-          <img src="sorry2.png" />
-          <img src="sorry3.png" />
-        </div>
       </div>
     </div>
   </body>
