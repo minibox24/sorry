@@ -70,6 +70,7 @@
 
         window.addEventListener("resize", () => {
           update(window.last);
+          root.style.height = window.innerHeight + "px";
         });
       });
     </script>
@@ -93,6 +94,7 @@
         max-width: 960px;
         max-height: 540px;
 
+        aspect-ratio: 16 / 9;
         background-color: black;
 
         display: flex;
@@ -115,12 +117,7 @@
   <body>
     <div class="root">
       <div class="viewport">
-        <video
-          src="sorry.mp4"
-          width="960"
-          height="540"
-          style="opacity: 0"
-        ></video>
+        <video src="sorry.mp4" style="opacity: 0"></video>
         <span class="text">마하 9의 속도로 로딩 중</span>
       </div>
     </div>
